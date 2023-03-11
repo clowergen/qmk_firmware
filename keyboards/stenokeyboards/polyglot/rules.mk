@@ -16,3 +16,4 @@ BACKLIGHT_ENABLE = no       # Enable keyboard backlight functionality
 RGBLIGHT_ENABLE = no        # Enable keyboard RGB underglow
 AUDIO_ENABLE = no           # Audio output
 STENO_ENABLE = yes
+TAP_DANCE_ENABLE = yes

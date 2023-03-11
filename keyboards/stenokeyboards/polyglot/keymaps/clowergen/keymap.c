@@ -29,22 +29,44 @@ enum polyglot_layers {
 
 enum polyglot_keycodes {
   STENO = SAFE_RANGE
- ,QWERTY
+// ,QWERTY
  ,NUMSL
  ,SYMSL
  ,FUNCS
+// ,SFTSPC
  ,CTLESC
- ,SFTSPC
+ ,TPZR
+ ,EMOJI
  ,BACK
 };
 
+
+/* tap dance stuff */
+
+enum td_keycodes {
+	CTL_QWERTY
+};
+
+typedef enum {
+	SINGLE_TAP,
+	SINGLE_HOLD
+} td_state_t;
+
+static td_state_t td_state;
+
+int cur_dance (tap_dance_state_t *state);
+void ctlqwerty_finished (tap_dance_state_t *state, void *user_data);
+void ctlqwerty_reset (tap_dance_state_t *state, void *user_data);
+
+/* end of tap dance stuff*/
+
 #define STENO LALT_T(KC_NO)
-#define QWERTY LT(0, KC_NO)
+#define QWERTY LT(_QWERTY, KC_NO)
 #define NUMSL MO(_NUMSL)
 #define SYMSL LT(_SYMSL, KC_APP)
-#define FUNCS MO(_FUNCS)
+#define FUNCS LT(_FUNCS, KC_NO)
+//#define SFTSPC LSFT_T(KC_SPC)
 #define CTLESC LCTL_T(KC_ESC)
-#define SFTSPC LSFT_T(KC_SPC)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -54,7 +76,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       QK_GESC,  STN_S2,  STN_KL,  STN_WL,  STN_RL, STN_ST2, 			 STN_ST4,  STN_RR,  STN_BR,  STN_GR,  STN_SR,  STN_ZR,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       QWERTY, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI,  KC_SPC,    			 KC_VOLD, KC_LEFT, KC_DOWN, KC_UP ,KC_RIGHT,  KC_VOLU,
+       TD(CTL_QWERTY), KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI,  KC_SPC,    			 KC_VOLD, KC_LEFT, KC_DOWN, KC_UP ,KC_RIGHT,  KC_VOLU,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                   STN_N1,   STN_A,   STN_O,          		   STN_E,   STN_U, STN_N2
                                        //`--------------------------'  `--------------------------'
@@ -69,20 +91,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        STENO,    UK_Z,    UK_X,    UK_C,    UK_V,    UK_B,                         UK_N,    UK_M, UK_COMM,  UK_DOT, UK_SLSH,  KC_ENT,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                KC_LGUI,   NUMSL,  SFTSPC,                       KC_SPC,   SYMSL, KC_ALGR
+                                KC_LGUI,   NUMSL, KC_LSFT,                       KC_SPC,   SYMSL, KC_ALGR
                                       //`--------------------------'  `--------------------------'
 
   ),
 
   [_NUMSL] = LAYOUT( //number layer
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-     _______, _______, KC_HOME,   KC_UP,  KC_END, _______,                      KC_PPLS,    UK_7,    UK_8,    UK_9, KC_PAST,  KC_DEL,
+      UK_GRV, _______, KC_HOME,   KC_UP,  KC_END, UK_PERC,                      KC_PPLS,    UK_7,    UK_8,    UK_9, KC_PAST,  KC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_PGUP, _______, KC_LEFT, KC_DOWN,KC_RIGHT, _______,                      KC_PMNS,    UK_4,    UK_5,    UK_6, KC_PSLS, UK_HASH,
+     KC_PGUP, _______, KC_LEFT, KC_DOWN,KC_RIGHT,  UK_PND,                      KC_PMNS,    UK_4,    UK_5,    UK_6, KC_PSLS, UK_HASH,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      KC_PGDN, _______, KC_VOLD, KC_MPLY, KC_VOLU, KC_MUTE,                      KC_PEQL,    UK_1,    UK_2,    UK_3, KC_PDOT, _______,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                _______, _______, _______,                         UK_0,   FUNCS, _______
+                                _______, _______, _______,                         UK_0,   FUNCS,  TPZR
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -90,11 +112,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       UK_GRV, UK_EXLM, UK_DQUO,  UK_PND,  UK_DLR, UK_PERC,                      UK_CIRC, UK_AMPR, UK_ASTR, UK_LPRN, UK_RPRN,  KC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_CAPS, _______, _______, _______, UK_EURO, _______,                      UK_MINS,  UK_EQL, _______, UK_LBRC, UK_RBRC, UK_TILD,
+     KC_CAPS,   EMOJI, _______, _______, UK_EURO, _______,                      _______, UK_MINS,  UK_EQL, UK_LBRC, UK_RBRC, UK_TILD,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     UK_PIPE, UK_BSLS, _______, _______, _______, _______,                      UK_UNDS, UK_PLUS, _______, UK_LCBR, UK_RCBR, KC_PSCR,
+     UK_PIPE, UK_BSLS, _______, _______, _______, _______,                      _______, UK_UNDS, UK_PLUS, UK_LCBR, UK_RCBR, KC_PSCR,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                _______, XXXXXXX, _______,    		        _______, _______, _______
+                                _______,  KC_APP, _______,    		        _______, _______, _______
                                       //`--------------------------'  `--------------------------'
   ),
   
@@ -108,38 +130,57 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                 _______, _______, _______,   			_______, _______, _______
                                       //`--------------------------'  `--------------------------'
-  ),
+  )
 
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
-  switch (keycode) {
-    case QWERTY:
-      /*if (record->event.pressed && record->tap.count > 0) { //tapped
-      	//tap_code(UK_W); //debug
-	layer_move(_QWERTY);
-	return false;
-      } else if (record->event.pressed) { //held
-      	register_code(KC_LCTL);
-      	layer_on(_QWERTY);
-      	return false;
-      } else { // released
-      	layer_off(_QWERTY);
-      	unregister_code(KC_LCTL);
-      	return false;
-      }
-      break;*/
-      if (record->event.pressed) {
-	layer_move(_QWERTY);
-      }
-      return false;
-    case STENO:
-      if (record->tap.count && record->event.pressed) { //tapped
-        layer_move(_STENO_DEFAULT);
-        return false;
-      }
-      break;
+	switch (keycode) {
+		/*case QWERTY:
+			if (record->tap.count && record->event.pressed) { //tapped
+      				//tap_code(UK_W); //debug
+				layer_move(_QWERTY);
+				return false;
+			} 
+			break;
+			else if (record->event.pressed) { //held
+				register_code(KC_LCTL);
+				layer_on(_QWERTY);
+				return false;
+			} else { // released
+				layer_off(_QWERTY);
+				unregister_code(KC_LCTL);
+				return false;
+			}
+			//break;
+			if (record->event.pressed) {
+				layer_move(_QWERTY);
+				return false;
+			}*/
+		case EMOJI:
+			if (record->event.pressed) {
+				tap_code16(C(S(UK_E)));
+				tap_code(KC_SPC);
+				return false;
+      			}
+		case STENO:
+			if (record->tap.count && record->event.pressed) { //tapped
+				layer_move(_STENO_DEFAULT);
+				return false;
+			}
+			break;
+		case FUNCS:
+			if (record->tap.count && record->event.pressed) {
+				SEND_STRING("00");
+				return false;
+			}
+			break;
+		case TPZR:
+			if (record->event.pressed) {
+				SEND_STRING("000");
+				return false;
+      			}
   }
   return true;
 }
@@ -147,5 +188,47 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 // initialize steno protocol
 void keyboard_post_init_user(void)
 {
-  steno_set_mode(STENO_MODE_GEMINI);
+	steno_set_mode(STENO_MODE_GEMINI);
 }
+
+/* tap dance stuff */
+
+int cur_dance (tap_dance_state_t *state) {
+	if (state->count == 1) {
+		if (state->interrupted || !state->pressed) { return SINGLE_TAP; }
+		else { return SINGLE_HOLD; }
+	}
+	else { return 2; }
+}
+
+void ctlqwerty_finished (tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			//layer_move(_QWERTY);
+			break;
+		case SINGLE_HOLD:
+			//register_mods(MOD_BIT(KC_LCTL));
+			register_code(KC_LCTL);
+			layer_on(_QWERTY);
+			break;
+	}
+}
+void ctlqwerty_reset (tap_dance_state_t *state, void *user_data) {
+	switch (td_state) {
+		case SINGLE_TAP:
+			layer_move(_QWERTY);
+			break;
+		case SINGLE_HOLD:
+			layer_off(_QWERTY);
+			//unregister_mods(MOD_BIT(KC_LCTL));
+			unregister_code(KC_LCTL);
+			break;
+	}
+}
+
+tap_dance_action_t tap_dance_actions[] = {
+	[CTL_QWERTY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ctlqwerty_finished, ctlqwerty_reset)
+};
+
+/* end of tap dance stuff*/

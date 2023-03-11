@@ -28,3 +28,5 @@
 #define DIODE_DIRECTION COL2ROW
 
 #define FORCE_NKRO
+
+#define TAPPING_TERM  135
