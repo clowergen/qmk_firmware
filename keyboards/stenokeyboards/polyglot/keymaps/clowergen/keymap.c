@@ -76,11 +76,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_NUMSL] = LAYOUT( //number layer
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-     _______, _______, KC_HOME,   KC_UP,  KC_END, _______,                      KC_PPLS,    UK_7,    UK_8,    UK_9, _______,  KC_DEL,
+     _______, _______, KC_HOME,   KC_UP,  KC_END, _______,                      KC_PPLS,    UK_7,    UK_8,    UK_9, KC_PAST,  KC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_PGUP, _______, KC_LEFT, KC_DOWN,KC_RIGHT, _______,                      KC_PMNS,    UK_4,    UK_5,    UK_6, _______, UK_HASH,
+     KC_PGUP, _______, KC_LEFT, KC_DOWN,KC_RIGHT, _______,                      KC_PMNS,    UK_4,    UK_5,    UK_6, KC_PSLS, UK_HASH,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_PGDN, _______, KC_VOLD, KC_MPLY, KC_VOLU, KC_MUTE,                      KC_PEQL,    UK_1,    UK_2,    UK_3, _______, _______,
+     KC_PGDN, _______, KC_VOLD, KC_MPLY, KC_VOLU, KC_MUTE,                      KC_PEQL,    UK_1,    UK_2,    UK_3, KC_PDOT, _______,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                 _______, _______, _______,                         UK_0,   FUNCS, _______
                                       //`--------------------------'  `--------------------------'
@@ -88,7 +88,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_SYMSL] = LAYOUT( //symbol layer
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      UK_GRV, UK_EXLM, UK_DQUO,  UK_PND,  UK_DLR, UK_PERC,                      UK_CIRC, UK_AMPR, UK_ASTR, UK_LPRN, UK_RPRN, _______,
+      UK_GRV, UK_EXLM, UK_DQUO,  UK_PND,  UK_DLR, UK_PERC,                      UK_CIRC, UK_AMPR, UK_ASTR, UK_LPRN, UK_RPRN,  KC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      KC_CAPS, _______, _______, _______, UK_EURO, _______,                      UK_MINS,  UK_EQL, _______, UK_LBRC, UK_RBRC, UK_TILD,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -116,15 +116,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
   switch (keycode) {
     case QWERTY:
-      if (record->tap.count && record->event.pressed) { //tapped
+      /*if (record->event.pressed && record->tap.count > 0) { //tapped
       	//tap_code(UK_W); //debug
 	layer_move(_QWERTY);
+	return false;
       } else if (record->event.pressed) { //held
       	register_code(KC_LCTL);
       	layer_on(_QWERTY);
+      	return false;
       } else { // released
       	layer_off(_QWERTY);
       	unregister_code(KC_LCTL);
+      	return false;
+      }
+      break;*/
+      if (record->event.pressed) {
+	layer_move(_QWERTY);
       }
       return false;
     case STENO:
